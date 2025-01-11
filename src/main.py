@@ -1,10 +1,10 @@
 import os
 import sys
-import torch
+import torchvision; torchvision.disable_beta_transforms_warning()
+import wandb
 from transformers import Trainer, TrainingArguments, set_seed
 from huggingface_hub import login
 import dotenv
-dotenv.load_dotenv()
 
 sys.path.append(os.getcwd())
 
@@ -13,13 +13,16 @@ from utils.datasets import get_dataset
 from src.utils.metrics import compute_metrics
 from utils.train_utils import image_collator
 
+dotenv.load_dotenv()
 set_seed(42)
 login(token=os.getenv("HUGGINGFACE_TOKEN"))
 
 def main():
-    model = VisionTransformer("distilbert-base-uncased")
+
+    wandb.init(project="llm-vit", entity="wandb", mode="disabled")
+    # model = VisionTransformer("distilbert-base-uncased")
     # model = VisionTransformer("microsoft/phi-4")
-    # model = VisionTransformer("meta-llama/Meta-Llama-3.1-8B-Instruct")
+    model = VisionTransformer("meta-llama/Meta-Llama-3.1-8B-Instruct")
     dataset = get_dataset("MNIST")
     trainer = Trainer(
        model=model,
@@ -27,12 +30,14 @@ def main():
            output_dir="./outputs/mnist_vit",
            run_name="mnist_vit",
            num_train_epochs=3,
-           per_device_train_batch_size=128,
-           learning_rate=2e-3,
+           per_device_train_batch_size=1,
+           gradient_accumulation_steps=4,
+           learning_rate=2e-4,
            eval_strategy="epoch",
            logging_strategy="steps",
            logging_steps=10,
             optim="paged_adamw_32bit",
+            # use_cpu=True,
        ),
        train_dataset=dataset["train"],
        eval_dataset=dataset["eval"],
