@@ -1,19 +1,19 @@
 
-import torch
+from typing import Dict
 import torchvision; torchvision.disable_beta_transforms_warning()
-
 from torchvision import transforms, datasets
+from torch.utils.data import Dataset
 
-def get_dataset(name):
+def get_dataset(name: str) -> Dict[str, Dataset]:
     train_transforms = transforms.Compose([
-    transforms.RandomHorizontalFlip() if name != "MNIST" else transforms.RandomRotation(10),
-    transforms.ToTensor(),
-    transforms.Normalize((0.5,), (0.5,))
+        transforms.RandomHorizontalFlip() if name != "MNIST" else transforms.RandomRotation(10),
+        transforms.ToTensor(),
+        transforms.Normalize((0.5,), (0.5,))
     ])
 
     test_transforms = transforms.Compose([
-    transforms.ToTensor(), 
-    transforms.Normalize((0.5,), (0.5,))
+        transforms.ToTensor(), 
+        transforms.Normalize((0.5,), (0.5,))
     ])
     dataset_constructor = getattr(datasets, name)
     train_dataset = dataset_constructor(root="./data", train=True, download=True, transform=train_transforms)

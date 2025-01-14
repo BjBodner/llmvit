@@ -1,28 +1,24 @@
 import os
-import sys
+from dotenv import load_dotenv
 import torchvision; torchvision.disable_beta_transforms_warning()
 import wandb
-from transformers import Trainer, TrainingArguments, set_seed
 from huggingface_hub import login
-import dotenv
+from transformers import Trainer, TrainingArguments, set_seed
 
-sys.path.append(os.getcwd())
-
-from src.models.llm_vit import VisionTransformer
+from models.llm_vit import VisionTransformer
 from utils.datasets import get_dataset
-from src.utils.metrics import compute_metrics
+from utils.metrics import compute_metrics
 from utils.train_utils import image_collator
 
-dotenv.load_dotenv()
+load_dotenv()
 set_seed(42)
-login(token=os.getenv("HUGGINGFACE_TOKEN"))
+login(token=os.getenv("HUGGINGFACE_TOKEN")) # add your Hugging Face token to a .env file
 
 def main():
 
     wandb.init(project="llm-vit", entity="wandb", mode="disabled")
-    # model = VisionTransformer("distilbert-base-uncased")
-    # model = VisionTransformer("microsoft/phi-4")
-    model = VisionTransformer("meta-llama/Meta-Llama-3.1-8B-Instruct")
+    model = VisionTransformer("distilbert-base-uncased", frozen_backbone_steps=100)
+    
     dataset = get_dataset("MNIST")
     trainer = Trainer(
        model=model,
@@ -37,7 +33,6 @@ def main():
            logging_strategy="steps",
            logging_steps=10,
             optim="paged_adamw_32bit",
-            # use_cpu=True,
        ),
        train_dataset=dataset["train"],
        eval_dataset=dataset["eval"],
