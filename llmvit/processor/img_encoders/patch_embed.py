@@ -1,12 +1,13 @@
 import torch
 from torch import nn
 
+from processor.img_encoders._base_encoder import BaseEncoder
 
-class PatchEmbed(nn.Module):
+class PatchEmbed(BaseEncoder):
     def __init__(
-        self, img_size: int = 28, patch_size: int = 7, embed_dim: int = 768
+        self, img_size: int = 28, patch_size: int = 7, embed_dim: int = 768, **kwargs
     ) -> None:
-        super().__init__()
+        super().__init__(embed_dim)
         self.img_size = img_size
         self.patch_size = patch_size
         self.n_patches = (img_size // patch_size) ** 2

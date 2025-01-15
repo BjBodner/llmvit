@@ -7,10 +7,10 @@ import wandb
 from huggingface_hub import login
 from transformers import Trainer, TrainingArguments, set_seed
 
-from models.llm_vit import VisionTransformer
+from models.llm_vit import LLMVIT, EncoderConfig, EmbedderConfig
 from utils.datasets import get_dataset
 from utils.metrics import compute_metrics
-from utils.train_utils import image_collator
+from utils.train_utils import image_collator, DEFAULT_LORA_CFG, DEFAULT_BNB_CFG, get_classification_model
 
 load_dotenv()
 set_seed(42)
@@ -22,7 +22,21 @@ login(
 def main():
 
     wandb.init(project="llm-vit", entity="wandb", mode="disabled")
-    model = VisionTransformer("distilbert-base-uncased", frozen_backbone_steps=100)
+
+    model = LLMVIT(
+        model=get_classification_model(
+            "distilbert-base-uncased",
+            depth=12,
+            num_classes=10,
+            lora_config=DEFAULT_LORA_CFG,
+            bnb_config=DEFAULT_BNB_CFG,
+        ),
+        img_processor_config=EncoderConfig(),
+        embedder_config=EmbedderConfig(),
+    )
+
+    
+    # model = VisionTransformer("distilbert-base-uncased", frozen_backbone_steps=100)
 
     dataset = get_dataset("MNIST")
     trainer = Trainer(

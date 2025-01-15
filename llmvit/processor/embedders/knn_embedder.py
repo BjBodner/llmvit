@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import scipy.spatial
-from _base_embedder import BaseEmbedder
+from processor.embedders._base_embedder import BaseEmbedder
 from functools import partial
 
 
