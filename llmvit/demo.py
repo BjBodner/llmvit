@@ -26,19 +26,17 @@ def main():
     model = LLMVIT(
         model=get_classification_model(
             "distilbert-base-uncased",
-            depth=12,
+            depth=2,
             num_classes=10,
             lora_config=DEFAULT_LORA_CFG,
             bnb_config=DEFAULT_BNB_CFG,
         ),
-        img_processor_config=EncoderConfig(),
-        embedder_config=EmbedderConfig(),
+        img_processor_config=EncoderConfig(type="patch_embed", in_channels=1),
+        embedder_config=EmbedderConfig(type="direct", k=2, temperature=1.0),
     )
 
-    
-    # model = VisionTransformer("distilbert-base-uncased", frozen_backbone_steps=100)
-
     dataset = get_dataset("MNIST")
+
     trainer = Trainer(
         model=model,
         args=TrainingArguments(

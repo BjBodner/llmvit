@@ -15,7 +15,7 @@ class ViTEncoder(BaseEncoder):
         embed_dim: int = 768,
         num_encoder_layers: int = 2,
         dropout: float = 0.1,
-        nhead: int = 12,
+        nhead: int = 8,
         **kwargs,
     ) -> None:
         super().__init__(embed_dim)

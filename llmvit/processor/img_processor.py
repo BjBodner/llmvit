@@ -24,7 +24,7 @@ class ImgProcessor(nn.Module):
         )
 
     def forward(self, x: torch.Tensor) -> dict[str, torch.Tensor]:
-        x = self.img_encoder(x)
-        out_dict = self.embedder(x)
-        return out_dict
+        img_encoder_output = self.img_encoder(x)
+        inputs_embeds = self.embedder(img_encoder_output)
+        return inputs_embeds, img_encoder_output
 

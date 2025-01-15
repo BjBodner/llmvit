@@ -11,8 +11,8 @@ class EncoderConfig:
     hidden_dim: int = 256
     embed_dim: int = 768
     num_encoder_layers: int = 2
-    dropout: float = 0.1
-    nhead: int = 12
+    dropout: float = 0.0
+    nhead: int = 8
 
 IMG_ENCODER_REGISTRY = {"vit": ViTEncoder, "patch_embed": PatchEmbed}
 

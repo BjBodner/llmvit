@@ -5,16 +5,16 @@ from transformers import PreTrainedModel
 # TODO: add an auxiliary loss to push the embeddings to be close to the text embeddings
 
 from processor.img_processor import ImgProcessor, EncoderConfig, EmbedderConfig
-
+from utils.train_utils import gaussian_kl_loss
 class LLMVIT(nn.Module):
     def __init__(self, 
                  model: PreTrainedModel, 
-                 img_processor_config: EncoderConfig, 
-                 embedder_config: EmbedderConfig, 
+                 img_processor_config: EncoderConfig = EncoderConfig(), 
+                 embedder_config: EmbedderConfig = EmbedderConfig(), 
                  frozen_backbone_steps: int = -1, 
                  always_freeze_backbone: bool = False,
                  criterion: nn.Module = nn.CrossEntropyLoss(),
-                 embedding_loss_weight: float = 0.1,
+                 embedding_loss_weight: float = 0.,
                  embedding_loss: str = nn.MSELoss(),
         ):
         super().__init__()
@@ -26,7 +26,7 @@ class LLMVIT(nn.Module):
         self.criterion = criterion
         self.embedding_loss_weight = embedding_loss_weight
         self.embedding_loss = embedding_loss
-        self.word_embedddings = self.model.get_input_embeddings()
+        # self.word_embedddings = self.model.get_input_embeddings()
         if self.frozen_backbone_steps > 0:
             self.freeze_backbone()
             self.backbone_frozen = True
@@ -52,14 +52,22 @@ class LLMVIT(nn.Module):
                 self.unfreeze_backbone()
                 self.backbone_frozen = False
 
-    def forward(self, img: torch.Tensor, labels: torch.Tensor = None) -> dict[str, torch.Tensor]:
-        inputs = self.img_processor(img)
-        outputs = self.model(**inputs)
+    def forward(self, images: torch.Tensor, labels: torch.Tensor = None) -> dict[str, torch.Tensor]:
+        inputs_embeds, img_encoder_output = self.img_processor(images)
+        outputs = self.model(inputs_embeds=inputs_embeds)
         self.increment_frozen_backbone_steps()
+
         if self.training and labels is not None:
             loss = self.criterion(outputs.logits, labels)
             if self.embedding_loss_weight > 0:
-                embedding_loss = self.embedding_loss(inputs["inputs_embeds"], self.word_embedddings.weight.detach())
+                # embedding_loss = self.embedding_loss(img_encoder_output, inputs_embeds.detach())
+                
+                emb_mean = torch.mean(self.model.get_input_embeddings().weight, dim=0)
+                emb_std = torch.std(self.model.get_input_embeddings().weight, dim=0)
+                batch_mean = torch.mean(img_encoder_output, dim=1)
+                batch_std = torch.std(img_encoder_output, dim=1)
+                embedding_loss = gaussian_kl_loss(batch_mean, batch_std, emb_mean, emb_std)
+
                 loss += self.embedding_loss_weight * embedding_loss
             return {"loss": loss, "logits": outputs.logits}
         return {"logits": outputs.logits, "loss": None}

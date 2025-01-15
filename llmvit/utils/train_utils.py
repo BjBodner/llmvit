@@ -24,6 +24,20 @@ def image_collator(
     labels = torch.tensor([f[1] for f in features])
     return {"images": images, "labels": labels}
 
+def gaussian_kl_loss(mean1, std1, mean2, std2):
+    """
+    Compute KL divergence between two Gaussians.
+    KL(N(μ₁,σ₁²) || N(μ₂,σ₂²)) = log(σ₂/σ₁) + (σ₁² + (μ₁-μ₂)²)/(2σ₂²) - 1/2
+    """
+    var1, var2 = std1.pow(2), std2.pow(2)
+    eps = 1e-8
+    kl_div = (torch.log(std2 + eps) - torch.log(std1 + eps) + 
+              (var1 + (mean1 - mean2.detach()).pow(2)) / (2 * var2.detach() + eps) - 0.5)
+    
+    return kl_div.mean()
+
+
+
 def get_classification_model(
         pretrained_model_name_or_path: str,
         depth: int,

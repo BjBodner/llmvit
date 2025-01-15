@@ -10,7 +10,7 @@ EMBEDDER_REGISTRY = {"knn": KNNEmbedder, "direct": DirectEmbedder}
 class EmbedderConfig:
     type: str = "knn"
     k: int = 4
-    temperature: float = 1.0
+    temperature: float = 0.1
 
 
 __all__ = ["KNNEmbedder", "DirectEmbedder"]
