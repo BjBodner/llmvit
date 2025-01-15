@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "llm-vit"
+version = "0.1.0"
+authors = [
+    { name = "Benjamin Bodner", email = "benjybo7@gmail.com" },
+]
+description = "A Vision Transformer implementation using LLM features"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "torch",
+    "torchvision",
+    "transformers",
+    "python-dotenv",
+    "wandb",
+    "huggingface-hub",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/BjBodner/llmvit"
+"Bug Tracker" = "https://github.com/BjBodner/llmvit/issues" 
