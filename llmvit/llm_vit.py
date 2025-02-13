@@ -1,9 +1,6 @@
 import torch
 import torch.nn as nn
 from transformers import PreTrainedModel
-
-# TODO: add an auxiliary loss to push the embeddings to be close to the text embeddings
-
 from processor.img_processor import ImgProcessor, EncoderConfig, EmbedderConfig
 from utils.train_utils import gaussian_kl_loss
 

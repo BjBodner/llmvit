@@ -7,10 +7,10 @@ import wandb
 from huggingface_hub import login
 from transformers import Trainer, TrainingArguments, set_seed
 
-from models.llm_vit import LLMVIT, EncoderConfig, EmbedderConfig
-from utils.datasets import get_dataset
-from utils.metrics import compute_metrics
-from utils.train_utils import image_collator, DEFAULT_LORA_CFG, DEFAULT_BNB_CFG, get_classification_model
+from llmvit import LLMVIT, EncoderConfig, EmbedderConfig
+from llmvit.utils.datasets import get_dataset
+from llmvit.utils.metrics import compute_metrics
+from llmvit.utils.train_utils import image_collator, DEFAULT_LORA_CFG, DEFAULT_BNB_CFG, get_classification_model
 
 load_dotenv()
 set_seed(42)
