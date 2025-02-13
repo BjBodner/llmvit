@@ -1,10 +1,9 @@
 import torch
 from torch import nn
-from typing import Dict, Any
 from dataclasses import asdict
 
-from processor.img_encoders import EncoderConfig, IMG_ENCODER_REGISTRY
-from processor.embedders import EmbedderConfig, EMBEDDER_REGISTRY
+from llmvit.processor.img_encoders import EncoderConfig, IMG_ENCODER_REGISTRY
+from llmvit.processor.embedders import EmbedderConfig, EMBEDDER_REGISTRY
 
 DEFAULT_IMG_ENCODER_RGSA = {"type": "vit"}
 

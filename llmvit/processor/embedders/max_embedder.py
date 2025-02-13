@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from _base_embedder import BaseEmbedder
+from llmvit.processor.embedders._base_embedder import BaseEmbedder
 
 class MaxEmbedder(BaseEmbedder):
     def __init__(self, embeddings: torch.Tensor, similarity_metric: str = "cosine_similarity", **kwargs) -> None:

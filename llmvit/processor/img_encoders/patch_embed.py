@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 
-from processor.img_encoders._base_encoder import BaseEncoder
+from llmvit.processor.img_encoders._base_encoder import BaseEncoder
 
 class PatchEmbed(BaseEncoder):
     def __init__(

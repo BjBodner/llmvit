@@ -1,8 +1,8 @@
 import torch
 from torch import nn
 
-from processor.img_encoders._base_encoder import BaseEncoder
-from processor.img_encoders.patch_embed import PatchEmbed
+from llmvit.processor.img_encoders._base_encoder import BaseEncoder
+from llmvit.processor.img_encoders.patch_embed import PatchEmbed
 
 
 class ViTEncoder(BaseEncoder):

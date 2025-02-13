@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 from transformers import PreTrainedModel
-from processor.img_processor import ImgProcessor, EncoderConfig, EmbedderConfig
-from utils.train_utils import gaussian_kl_loss
+from llmvit.processor.img_processor import ImgProcessor, EncoderConfig, EmbedderConfig
+from llmvit.utils.train_utils import gaussian_kl_loss
 
 class LLMVIT(nn.Module):
     def __init__(self, 

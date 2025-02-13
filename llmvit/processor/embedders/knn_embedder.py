@@ -1,15 +1,16 @@
 import torch
 import torch.nn as nn
-import scipy.spatial
-from processor.embedders._base_embedder import BaseEmbedder
 from functools import partial
-from torch_cluster import knn
-# import torch_cluster.knn_cuda
+from llmvit.processor.embedders._base_embedder import BaseEmbedder
 
 class KNNEmbedder(BaseEmbedder):
     def __init__(self, embeddings: torch.Tensor, temperature: float = 1.0, k: int = 4, **kwargs):
         super().__init__(embeddings)
+        from torch_cluster import knn
+        import scipy.spatial
+        
         assert temperature >= 0, "Temperature must be greater than 0"
+        self.knn = knn
         self.temperature = temperature
         self.tree = scipy.spatial.cKDTree(embeddings.weight.data.cpu().numpy())
         self.k = k
@@ -19,7 +20,7 @@ class KNNEmbedder(BaseEmbedder):
 
     def _get_neighboor_embeddings(self, x: torch.Tensor) -> torch.Tensor:
         if torch.cuda.is_available():
-            src, tgt = knn(self.embeddings.weight.data, x.reshape(-1, x.shape[-1]), self.k)
+            src, tgt = self.knn(self.embeddings.weight.data, x.reshape(-1, x.shape[-1]), self.k)
             src_reshaped = src.reshape(x.shape[0], -1, self.k).permute(0, 2, 1)
             tgt_reshaped = tgt.reshape(x.shape[0], -1, self.k).permute(0, 2, 1)
             dist = torch.norm(self.embeddings(src_reshaped) - self.embeddings(tgt_reshaped), dim=-1)

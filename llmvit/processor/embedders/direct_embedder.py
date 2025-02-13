@@ -1,5 +1,5 @@
 import torch
-from ._base_embedder import BaseEmbedder
+from llmvit.processor.embedders._base_embedder import BaseEmbedder
 
 
 class DirectEmbedder(BaseEmbedder):
