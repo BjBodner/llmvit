@@ -6,7 +6,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry]
 name = "llmvit"
 version = "0.1.0"
-description = "A tool to adapt LLMs to be used as vision transformers."
+description = "A package for leveraging pretrained LLMs as vision transformer backbones."
 license = "MIT"
 authors = ["Benjamin Bodner <benjybo7@gmail.com>"]
 readme = "README.md"
