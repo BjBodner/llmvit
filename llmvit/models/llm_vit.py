@@ -6,6 +6,7 @@ from transformers import PreTrainedModel
 
 from processor.img_processor import ImgProcessor, EncoderConfig, EmbedderConfig
 from utils.train_utils import gaussian_kl_loss
+
 class LLMVIT(nn.Module):
     def __init__(self, 
                  model: PreTrainedModel, 
@@ -53,7 +54,7 @@ class LLMVIT(nn.Module):
         inputs_embeds, img_encoder_output = self.img_processor(images)
         outputs = self.model(inputs_embeds=inputs_embeds)
         self.increment_frozen_backbone_steps()
-
+        loss = None
         if self.training and labels is not None:
             loss = self.criterion(outputs.logits, labels)
             if self.embedding_loss_weight > 0:                
@@ -62,7 +63,6 @@ class LLMVIT(nn.Module):
                 batch_mean = torch.mean(img_encoder_output, dim=1)
                 batch_std = torch.std(img_encoder_output, dim=1)
                 embedding_loss = gaussian_kl_loss(batch_mean, batch_std, emb_mean, emb_std)
-
                 loss += self.embedding_loss_weight * embedding_loss
-            return {"loss": loss, "logits": outputs.logits}
+        
         return {"logits": outputs.logits, "loss": None}
