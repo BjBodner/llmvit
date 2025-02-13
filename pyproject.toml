@@ -1,30 +1,66 @@
 [build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 
-[project]
-name = "llm-vit"
+
+[tool.poetry]
+name = "llmvit"
 version = "0.1.0"
-authors = [
-    { name = "Benjamin Bodner", email = "benjybo7@gmail.com" },
-]
-description = "A Vision Transformer implementation using LLM features"
+description = "A tool to adapt LLMs to be used as vision transformers."
+license = "MIT"
+authors = ["Benjamin Bodner <benjybo7@gmail.com>"]
 readme = "README.md"
-requires-python = ">=3.8"
+homepage = "https://github.com/BjBodner/llmvit"
+documentation = "https://github.com/BjBodner/llmvit"
+packages = [
+    { include = "llmvit" }
+]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Operating System :: OS Independent",
-]
-dependencies = [
-    "torch",
-    "torchvision",
-    "transformers",
-    "python-dotenv",
-    "wandb",
-    "huggingface-hub",
+    "License :: OSI Approved :: MIT License",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
-[project.urls]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+# Core dependencies
+torch = "^2.1.1"
+pydantic = "^2.9.2"
+
+# Optional dependencies
+python-dotenv = { version = "^1.0.1", optional = true }
+wandb = { version = "^0.18.5", optional = true }
+huggingface-hub = { version = "^0.27.0", optional = true }
+pytest = { version = "^7.0.0", optional = true }
+black = { version = "^24.0.0", optional = true }
+
+[tool.poetry.extras]
+huggingface = ["huggingface-hub", "wandb", "python-dotenv"]
+test = ["pytest"]
+dev = ["pytest", "black", "python-dotenv"]
+
+[tool.black]
+force-exclude = '''
+/(
+  | /*venv*
+  | /.git
+  | /dist
+  | /htmlcov
+  | /docs
+  | /site
+)/
+'''
+
+[tool.poetry.urls]
 "Homepage" = "https://github.com/BjBodner/llmvit"
 "Bug Tracker" = "https://github.com/BjBodner/llmvit/issues" 
+

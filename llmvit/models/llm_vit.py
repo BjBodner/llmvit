@@ -15,7 +15,6 @@ class LLMVIT(nn.Module):
                  always_freeze_backbone: bool = False,
                  criterion: nn.Module = nn.CrossEntropyLoss(),
                  embedding_loss_weight: float = 0.,
-                 embedding_loss: str = nn.MSELoss(),
         ):
         super().__init__()
         self.model = model
@@ -25,8 +24,6 @@ class LLMVIT(nn.Module):
         self.curr_steps = 0
         self.criterion = criterion
         self.embedding_loss_weight = embedding_loss_weight
-        self.embedding_loss = embedding_loss
-        # self.word_embedddings = self.model.get_input_embeddings()
         if self.frozen_backbone_steps > 0:
             self.freeze_backbone()
             self.backbone_frozen = True
@@ -59,9 +56,7 @@ class LLMVIT(nn.Module):
 
         if self.training and labels is not None:
             loss = self.criterion(outputs.logits, labels)
-            if self.embedding_loss_weight > 0:
-                # embedding_loss = self.embedding_loss(img_encoder_output, inputs_embeds.detach())
-                
+            if self.embedding_loss_weight > 0:                
                 emb_mean = torch.mean(self.model.get_input_embeddings().weight, dim=0)
                 emb_std = torch.std(self.model.get_input_embeddings().weight, dim=0)
                 batch_mean = torch.mean(img_encoder_output, dim=1)
