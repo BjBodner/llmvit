@@ -1,10 +1,8 @@
-import numpy as np
 import torch
-import pytest
 
 from llmvit.utils.metrics import compute_metrics
 
-def test_compute_metrics():
+def test_compute_metrics() -> None:
     # Create sample predictions and labels
     logits = torch.tensor([
         [0.1, 0.8, 0.1],
@@ -19,7 +17,7 @@ def test_compute_metrics():
     assert isinstance(metrics["accuracy"], float)
     assert 0 <= metrics["accuracy"] <= 1
 
-def test_perfect_accuracy():
+def test_perfect_accuracy() -> None:
     logits = torch.tensor([
         [0.1, 0.8, 0.1],
         [0.7, 0.2, 0.1],
@@ -30,7 +28,7 @@ def test_perfect_accuracy():
     metrics = compute_metrics((logits, labels))
     assert metrics["accuracy"] == 1.0
 
-def test_zero_accuracy():
+def test_zero_accuracy() -> None:
     logits = torch.tensor([
         [0.8, 0.1, 0.1],
         [0.1, 0.8, 0.1],

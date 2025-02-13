@@ -3,10 +3,9 @@ import pytest
 from transformers import AutoModelForSequenceClassification
 
 from llmvit import LLMVIT, EncoderConfig, EmbedderConfig
-from llmvit.utils.train_utils import DEFAULT_LORA_CFG, DEFAULT_BNB_CFG
 
 @pytest.fixture
-def sample_model():
+def sample_model() -> AutoModelForSequenceClassification:
     return AutoModelForSequenceClassification.from_pretrained(
         "distilbert-base-uncased",
         num_labels=10,
@@ -14,14 +13,18 @@ def sample_model():
     )
 
 @pytest.fixture
-def sample_images():
+def sample_images() -> torch.Tensor:
     return torch.randn(2, 3, 224, 224)
 
 @pytest.fixture
-def sample_labels():
+def sample_labels() -> torch.Tensor:
     return torch.tensor([0, 1])
 
-def test_llm_vit_forward(sample_model, sample_images, sample_labels):
+def test_llm_vit_forward(
+    sample_model: AutoModelForSequenceClassification, 
+    sample_images: torch.Tensor, 
+    sample_labels: torch.Tensor
+) -> None:
     model = LLMVIT(
         model=sample_model,
         img_processor_config=EncoderConfig(
@@ -40,7 +43,7 @@ def test_llm_vit_forward(sample_model, sample_images, sample_labels):
     assert "loss" in outputs
     assert outputs["logits"].shape == (2, 10)
 
-def test_backbone_freezing(sample_model):
+def test_backbone_freezing(sample_model: AutoModelForSequenceClassification) -> None:
     model = LLMVIT(
         model=sample_model,
         frozen_backbone_steps=10
@@ -58,7 +61,11 @@ def test_backbone_freezing(sample_model):
     for param in model.model.parameters():
         assert param.requires_grad
 
-def test_embedding_loss(sample_model, sample_images, sample_labels):
+def test_embedding_loss(
+    sample_model: AutoModelForSequenceClassification, 
+    sample_images: torch.Tensor, 
+    sample_labels: torch.Tensor
+) -> None:
     model = LLMVIT(
         model=sample_model,
         embedding_loss_weight=0.1

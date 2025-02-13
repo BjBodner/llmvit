@@ -4,13 +4,13 @@ import pytest
 from llmvit.processor.img_encoders import ViTEncoder, PatchEmbed
 
 @pytest.fixture
-def sample_image():
+def sample_image() -> torch.Tensor:
     batch_size = 2
     channels = 3
     img_size = 224
     return torch.randn(batch_size, channels, img_size, img_size)
 
-def test_patch_embed():
+def test_patch_embed() -> None:
     img_size = 224
     patch_size = 16
     in_channels = 3
@@ -29,7 +29,7 @@ def test_patch_embed():
     expected_seq_len = (img_size // patch_size) ** 2
     assert output.shape == (2, expected_seq_len, embed_dim)
 
-def test_vit_encoder():
+def test_vit_encoder() -> None:
     img_size = 224
     patch_size = 16
     in_channels = 3
@@ -49,6 +49,6 @@ def test_vit_encoder():
     expected_seq_len = (img_size // patch_size) ** 2
     assert output.shape == (2, expected_seq_len, embed_dim)
 
-def test_invalid_patch_size():
+def test_invalid_patch_size() -> None:
     with pytest.raises(AssertionError):
         PatchEmbed(img_size=224, patch_size=15)  # Patch size should divide image size 

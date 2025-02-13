@@ -3,6 +3,12 @@
 Language Models as Vision Transformer Backbones.
 A Python package for leveraging pretrained Language Models (LLMs) as vision transformer backbones.
 
+## Features
+- Use any Hugging Face transformer LLM as a vision backbone.
+- Multiple image embedding strategies, adapted to the word embeddings of the LLM.
+- Configurable and customizable vision encoders.
+- Support for QLoRA fine-tuning and mixed precision training.
+
 ## Installation
 
 ```bash
@@ -16,15 +22,6 @@ git clone https://github.com/BjBodner/llmvit
 cd llmvit
 poetry install
 ```
-
-## Features
-
-- Use any Hugging Face transformer LLM as a vision backbone.
-- Multiple image embedding strategies, adapted to the word embeddings of the LLM.
-- Configurable and customizable vision encoders.
-- Support for QLoRA fine-tuning.
-- Automatic mixed precision training.
-- Wandb integration.
 
 ## Quick Start
 Create an LLMVIT model with your LLM of choice and, using a lightweight ViT encoder and a maximum similarity embedder.
