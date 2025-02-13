@@ -1,5 +1,6 @@
 # LLMVIT
 
+Language Models as Vision Transformer Backbones.
 A Python package for leveraging pretrained Language Models (LLMs) as vision transformer backbones.
 
 ## Installation
@@ -18,15 +19,15 @@ poetry install
 
 ## Features
 
-- Use any HuggingFace transformer model as a vision backbone
+- Use any Hugging Face transformer LLM as a vision backbone.
 - Multiple image embedding strategies, adapted to the word embeddings of the LLM.
-- Configurable Vision Transformer encoder
-- Support for QLoRA fine-tuning
-- Automatic mixed precision training
-- Wandb integration
+- Configurable and customizable vision encoders.
+- Support for QLoRA fine-tuning.
+- Automatic mixed precision training.
+- Wandb integration.
 
 ## Quick Start
-Create an LLMVIT model with your LLM of choice and, using a lightweight ViT encoder and a "nearest" embedder.
+Create an LLMVIT model with your LLM of choice and, using a lightweight ViT encoder and a maximum similarity embedder.
 
 ```python
 from llmvit import LLMVIT, EncoderConfig, EmbedderConfig
@@ -62,24 +63,24 @@ outputs = llm_vit(images, labels)
 
 The model consists of three main components:
 
-1. **Vision Encoder**: Processes images into patch embeddings using a Vision Transformer architecture
-2. **Embedder**: Maps vision features to the LLM's word embedding space
-3. **LLM Backbone**: Pre-trained transformer that processes the embedded image features
+1. **Vision Encoder**: Processes images into patch embeddings using a Vision Transformer architecture.
+2. **Embedder**: Maps vision features to the LLM's word embedding space.
+3. **LLM Backbone**: Pre-trained transformer that processes the embedded image features.
 
 ## Available Embedders
 
-1. **KNN Embedder**: Maps image features to k-nearest word embeddings with temperature-based weighting
+1. **KNN Embedder**: Maps image features to k-nearest word embeddings with temperature-based weighting.
 
-2. **Max Embedder**: Selects word embeddings based on maximum similarity
+2. **Max Embedder**: Selects word embeddings based on maximum similarity.
 
-3. **Direct Embedder**: Simple pass-through embedder
+3. **Direct Embedder**: Simple pass-through embedder.
 
 
 ## Available Encoders
 
 LLMVIT supports two types of image encoders:
 
-1. **Patch Embedder**: A convolutional encoder that processes image patches through a single convolutional layer.
+1. **Patch Encoder**: A convolutional encoder that processes image patches through a single convolutional layer.
 
 2. **Vision Transformer (ViT)**: A full transformer-based encoder that processes image patches through multiple self-attention layers.
 
@@ -151,10 +152,10 @@ model = LLMVIT(
 ```
 
 The demo uses:
-- QLoRA for efficient fine-tuning
-- 4-bit quantization with bitsandbytes
-- Weights & Biases for experiment tracking (disabled by default)
-- HuggingFace's Trainer for training loop management
+- QLoRA for efficient fine-tuning.
+- 4-bit quantization with bitsandbytes.
+- Weights & Biases for experiment tracking (disabled by default).
+- HuggingFace's Trainer for training loop management.
 
 You can modify the training arguments in the demo script to adjust:
 - Batch size
@@ -179,7 +180,7 @@ If you use this package in your research, please cite:
 @software{bodner2024llmvit,
   author = {Benjamin Jacob Bodner},
   title = {LLMVIT: Language Models as Vision Transformer Backbones},
-  year = {2024},
+  year = {2025},
   publisher = {GitHub},
   url = {https://github.com/BjBodner/llmvit}
 }

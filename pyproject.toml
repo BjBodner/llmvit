@@ -5,7 +5,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "llmvit"
-version = "0.1.0"
+version = "0.1.1"
 description = "A package for leveraging pretrained LLMs as vision transformer backbones."
 license = "MIT"
 authors = ["Benjamin Bodner <benjybo7@gmail.com>"]
@@ -32,8 +32,6 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
-# Core dependencies
-
 # Optional dependencies
 torch = { version = "^2.1.1", optional = true }
 torchvision = { version = "^0.16.1", optional = true }
