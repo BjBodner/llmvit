@@ -1,9 +1,10 @@
 from typing import Dict
+
 import torchvision
 
 torchvision.disable_beta_transforms_warning()
-from torchvision import transforms, datasets
 from torch.utils.data import Dataset
+from torchvision import datasets, transforms
 
 
 def get_dataset(name: str) -> Dict[str, Dataset]:

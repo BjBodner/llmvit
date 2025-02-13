@@ -1,6 +1,8 @@
 from dataclasses import dataclass
-from .vit_encoder import ViTEncoder
+
 from .patch_embed import PatchEmbed
+from .vit_encoder import ViTEncoder
+
 
 @dataclass
 class EncoderConfig:
@@ -13,6 +15,7 @@ class EncoderConfig:
     num_encoder_layers: int = 2
     dropout: float = 0.0
     nhead: int = 8
+
 
 IMG_ENCODER_REGISTRY = {"vit": ViTEncoder, "patch_embed": PatchEmbed}
 

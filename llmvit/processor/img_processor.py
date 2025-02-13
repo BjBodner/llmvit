@@ -1,11 +1,13 @@
-import torch
-from torch import nn
 from dataclasses import asdict
 
-from llmvit.processor.img_encoders import EncoderConfig, IMG_ENCODER_REGISTRY
-from llmvit.processor.embedders import EmbedderConfig, EMBEDDER_REGISTRY
+import torch
+from torch import nn
+
+from llmvit.processor.embedders import EMBEDDER_REGISTRY, EmbedderConfig
+from llmvit.processor.img_encoders import IMG_ENCODER_REGISTRY, EncoderConfig
 
 DEFAULT_IMG_ENCODER_RGSA = {"type": "vit"}
+
 
 class ImgProcessor(nn.Module):
     def __init__(
@@ -26,4 +28,3 @@ class ImgProcessor(nn.Module):
         img_encoder_output = self.img_encoder(x)
         inputs_embeds = self.embedder(img_encoder_output)
         return inputs_embeds, img_encoder_output
-

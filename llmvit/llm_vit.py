@@ -1,24 +1,31 @@
 import torch
 import torch.nn as nn
 from transformers import PreTrainedModel
-from llmvit.processor.img_processor import ImgProcessor, EncoderConfig, EmbedderConfig
+
+from llmvit.processor.img_processor import EmbedderConfig, EncoderConfig, ImgProcessor
 from llmvit.utils.train_utils import gaussian_kl_loss
 
+
 class LLMVIT(nn.Module):
-    def __init__(self, 
-                 model: PreTrainedModel, 
-                 img_processor_config: EncoderConfig = EncoderConfig(), 
-                 embedder_config: EmbedderConfig = EmbedderConfig(), 
-                 frozen_backbone_steps: int = -1, 
-                 always_freeze_backbone: bool = False,
-                 criterion: nn.Module = nn.CrossEntropyLoss(),
-                 embedding_loss_weight: float = 0.,
-        ):
+    def __init__(
+        self,
+        model: PreTrainedModel,
+        img_processor_config: EncoderConfig = EncoderConfig(),
+        embedder_config: EmbedderConfig = EmbedderConfig(),
+        frozen_backbone_steps: int = -1,
+        always_freeze_backbone: bool = False,
+        criterion: nn.Module = nn.CrossEntropyLoss(),
+        embedding_loss_weight: float = 0.0,
+    ):
         super().__init__()
         self.model = model
-        self.img_processor = ImgProcessor(model.get_input_embeddings(), img_processor_config, embedder_config)
+        self.img_processor = ImgProcessor(
+            model.get_input_embeddings(), img_processor_config, embedder_config
+        )
         self.always_freeze_backbone = always_freeze_backbone
-        self.frozen_backbone_steps = frozen_backbone_steps if not always_freeze_backbone else float("inf")
+        self.frozen_backbone_steps = (
+            frozen_backbone_steps if not always_freeze_backbone else float("inf")
+        )
         self.curr_steps = 0
         self.criterion = criterion
         self.embedding_loss_weight = embedding_loss_weight
@@ -47,19 +54,23 @@ class LLMVIT(nn.Module):
                 self.unfreeze_backbone()
                 self.backbone_frozen = False
 
-    def forward(self, images: torch.Tensor, labels: torch.Tensor = None) -> dict[str, torch.Tensor]:
+    def forward(
+        self, images: torch.Tensor, labels: torch.Tensor = None
+    ) -> dict[str, torch.Tensor]:
         inputs_embeds, img_encoder_output = self.img_processor(images)
         outputs = self.model(inputs_embeds=inputs_embeds)
         self.increment_frozen_backbone_steps()
         loss = None
         if self.training and labels is not None:
             loss = self.criterion(outputs.logits, labels)
-            if self.embedding_loss_weight > 0:                
+            if self.embedding_loss_weight > 0:
                 emb_mean = torch.mean(self.model.get_input_embeddings().weight, dim=0)
                 emb_std = torch.std(self.model.get_input_embeddings().weight, dim=0)
                 batch_mean = torch.mean(img_encoder_output, dim=1)
                 batch_std = torch.std(img_encoder_output, dim=1)
-                embedding_loss = gaussian_kl_loss(batch_mean, batch_std, emb_mean, emb_std)
+                embedding_loss = gaussian_kl_loss(
+                    batch_mean, batch_std, emb_mean, emb_std
+                )
                 loss += self.embedding_loss_weight * embedding_loss
-        
+
         return {"logits": outputs.logits, "loss": None}
